@@ -3,6 +3,11 @@
 
 ## 简介
 EasyJSON是一个十分容易上手的JSON库（^_^所以才叫做EasyJSON），支持Java和Android
+我们知道，日常的JSON操作主要是两种：
+1. 从JSON字符串中解析出各种数据(int、String、boolean等)
+2. 给定各种数据，生成JSON字符串
+
+EasyJSON库就是为了方便上述两种操作而诞生的。
 
 
 ## 开始使用
@@ -10,6 +15,14 @@ EasyJSON是一个十分容易上手的JSON库（^_^所以才叫做EasyJSON），
 ### 引用库文件
 在模块的gradle文件中引用库文件
 > compile 'cn.snailpad:EasyJSON:1.0.0'
+
+引入好库文件后，就可以使用了，下面说明一下使用方法
+
+我们主要用到里面的3个类
+* EasyJSONObject 用于解析JSON对象
+* EasyJSONArray 用于解析JSON数组
+* EasyJSONMap 用于生成JSON字符串
+
 
 ### 解析JSON
 以下面描述一本Java教材的属性的JSON为例
