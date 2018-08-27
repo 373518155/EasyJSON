@@ -18,6 +18,8 @@ package cn.snailpad.easyjson.json;
 
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
+import cn.snailpad.easyjson.EasyJSONException;
+
 /**
  * Parses a JSON (<a href="http://www.ietf.org/rfc/rfc4627.txt">RFC 4627</a>)
  * encoded string into the corresponding object. Most clients of
@@ -88,9 +90,9 @@ public class JSONTokener {
      *
      * @return a {@link JSONObject}, {@link JSONArray}, String, Boolean,
      *     Integer, Long, Double or {@link JSONObject#NULL}.
-     * @throws JSONException if the input is malformed.
+     * @throws EasyJSONException if the input is malformed.
      */
-    public Object nextValue() throws JSONException {
+    public Object nextValue() throws EasyJSONException {
         int c = nextCleanInternal();
         switch (c) {
             case -1:
@@ -112,7 +114,7 @@ public class JSONTokener {
         }
     }
 
-    private int nextCleanInternal() throws JSONException {
+    private int nextCleanInternal() throws EasyJSONException {
         while (pos < in.length()) {
             int c = in.charAt(pos++);
             switch (c) {
@@ -189,7 +191,7 @@ public class JSONTokener {
      *
      * @param quote either ' or ".
      */
-    public String nextString(char quote) throws JSONException {
+    public String nextString(char quote) throws EasyJSONException {
         /*
          * For strings that are free of escape sequences, we can just extract
          * the result as a substring of the input. But if we encounter an escape
@@ -234,7 +236,7 @@ public class JSONTokener {
      * been read. This supports both unicode escapes "u000A" and two-character
      * escapes "\n".
      */
-    private char readEscapeCharacter() throws JSONException {
+    private char readEscapeCharacter() throws EasyJSONException {
         char escaped = in.charAt(pos++);
         switch (escaped) {
             case 'u':
@@ -277,7 +279,7 @@ public class JSONTokener {
      * values will be returned as an Integer, Long, or Double, in that order of
      * preference.
      */
-    private Object readLiteral() throws JSONException {
+    private Object readLiteral() throws EasyJSONException {
         String literal = nextToInternal("{}[]/\\:,=;# \t\f");
 
         if (literal.length() == 0) {
@@ -346,7 +348,7 @@ public class JSONTokener {
      * Reads a sequence of key/value pairs and the trailing closing brace '}' of
      * an object. The opening brace '{' should have already been read.
      */
-    private JSONObject readObject() throws JSONException {
+    private JSONObject readObject() throws EasyJSONException {
         JSONObject result = new JSONObject();
 
         /* Peek to see if this is the empty object. */
@@ -401,7 +403,7 @@ public class JSONTokener {
      * "[]" yields an empty array, but "[,]" returns a two-element array
      * equivalent to "[null,null]".
      */
-    private JSONArray readArray() throws JSONException {
+    private JSONArray readArray() throws EasyJSONException {
         JSONArray result = new JSONArray();
 
         /* to cover input that ends with ",]". */
@@ -445,8 +447,8 @@ public class JSONTokener {
      * Returns an exception containing the given message plus the current
      * position and the entire input string.
      */
-    public JSONException syntaxError(String message) {
-        return new JSONException(message + this);
+    public EasyJSONException syntaxError(String message) {
+        return new EasyJSONException(message + this);
     }
 
     /**
@@ -485,7 +487,7 @@ public class JSONTokener {
      * Returns the next available character if it equals {@code c}. Otherwise an
      * exception is thrown.
      */
-    public char next(char c) throws JSONException {
+    public char next(char c) throws EasyJSONException {
         char result = next();
         if (result != c) {
             throw syntaxError("Expected " + c + " but was " + result);
@@ -499,7 +501,7 @@ public class JSONTokener {
      * found, the null character '\0' is returned. The return value of this
      * method is ambiguous for JSON strings that contain the character '\0'.
      */
-    public char nextClean() throws JSONException {
+    public char nextClean() throws EasyJSONException {
         int nextCleanInt = nextCleanInternal();
         return nextCleanInt == -1 ? '\0' : (char) nextCleanInt;
     }
@@ -512,10 +514,10 @@ public class JSONTokener {
      * indefinitely, you should use {@code new String(result)} to copy it first
      * to avoid memory leaks.
      *
-     * @throws JSONException if the remaining input is not long enough to
+     * @throws EasyJSONException if the remaining input is not long enough to
      *     satisfy this request.
      */
-    public String next(int length) throws JSONException {
+    public String next(int length) throws EasyJSONException {
         if (pos + length > in.length()) {
             throw syntaxError(length + " is out of bounds");
         }

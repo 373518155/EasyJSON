@@ -16,13 +16,15 @@
 
 package cn.snailpad.easyjson.json;
 
+import cn.snailpad.easyjson.EasyJSONException;
+
 class JSON {
     /**
      * Returns the input if it is a JSON-permissible value; throws otherwise.
      */
-    static double checkDouble(double d) throws JSONException {
+    static double checkDouble(double d) throws EasyJSONException {
         if (Double.isInfinite(d) || Double.isNaN(d)) {
-            throw new JSONException("Forbidden numeric value: " + d);
+            throw new EasyJSONException("Forbidden numeric value: " + d);
         }
         return d;
     }
@@ -92,23 +94,23 @@ class JSON {
         return null;
     }
 
-    public static JSONException typeMismatch(Object indexOrName, Object actual,
-            String requiredType) throws JSONException {
+    public static EasyJSONException typeMismatch(Object indexOrName, Object actual,
+                                                 String requiredType) throws EasyJSONException {
         if (actual == null) {
-            throw new JSONException("Value at " + indexOrName + " is null.");
+            throw new EasyJSONException("Value at " + indexOrName + " is null.");
         } else {
-            throw new JSONException("Value " + actual + " at " + indexOrName
+            throw new EasyJSONException("Value " + actual + " at " + indexOrName
                     + " of type " + actual.getClass().getName()
                     + " cannot be converted to " + requiredType);
         }
     }
 
-    public static JSONException typeMismatch(Object actual, String requiredType)
-            throws JSONException {
+    public static EasyJSONException typeMismatch(Object actual, String requiredType)
+            throws EasyJSONException {
         if (actual == null) {
-            throw new JSONException("Value is null.");
+            throw new EasyJSONException("Value is null.");
         } else {
-            throw new JSONException("Value " + actual
+            throw new EasyJSONException("Value " + actual
                     + " of type " + actual.getClass().getName()
                     + " cannot be converted to " + requiredType);
         }

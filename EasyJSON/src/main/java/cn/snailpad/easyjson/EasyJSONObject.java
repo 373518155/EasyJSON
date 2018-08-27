@@ -3,7 +3,6 @@ package cn.snailpad.easyjson;
 import java.util.Map;
 
 import cn.snailpad.easyjson.json.JSONArray;
-import cn.snailpad.easyjson.json.JSONException;
 import cn.snailpad.easyjson.json.JSONObject;
 import cn.snailpad.easyjson.json.JSONTokener;
 
@@ -17,7 +16,7 @@ public class EasyJSONObject {
     public EasyJSONObject(JSONTokener readFrom) {
         try {
             jsonObject = new JSONObject(readFrom);
-        } catch (JSONException e) {
+        } catch (EasyJSONException e) {
             e.printStackTrace();
         }
     }
@@ -25,7 +24,7 @@ public class EasyJSONObject {
     public EasyJSONObject(String json) {
         try {
             jsonObject = new JSONObject(json);
-        } catch (JSONException e) {
+        } catch (EasyJSONException e) {
             e.printStackTrace();
         }
     }
@@ -33,7 +32,7 @@ public class EasyJSONObject {
     public EasyJSONObject(JSONObject copyFrom, String[] names) {
         try {
             jsonObject = new JSONObject(copyFrom, names);
-        } catch (JSONException e) {
+        } catch (EasyJSONException e) {
             e.printStackTrace();
         }
     }
@@ -68,7 +67,7 @@ public class EasyJSONObject {
      *             当path = "data[1].c时，返回300
      * @return
      */
-    public Object get(String path) throws JSONException {
+    public Object get(String path) throws EasyJSONException {
         String[] names = path.split("\\."); // 用点号来分隔不同的层级
         Object obj = null;
         for (String name : names) {
@@ -92,31 +91,31 @@ public class EasyJSONObject {
         return obj;
     }
 
-    public JSONArray getJSONArray(String path) throws JSONException {
+    public JSONArray getJSONArray(String path) throws EasyJSONException {
         return (JSONArray)get(path);
     }
 
-    public EasyJSONArray getEasyJsonArray(String path) throws JSONException {
+    public EasyJSONArray getEasyJsonArray(String path) throws EasyJSONException {
         return new EasyJSONArray((JSONArray)get(path));
     }
 
-    public JSONObject getJSONObject(String path) throws JSONException {
+    public JSONObject getJSONObject(String path) throws EasyJSONException {
         return (JSONObject)get(path);
     }
 
-    public boolean getBoolean(String path) throws JSONException {
+    public boolean getBoolean(String path) throws EasyJSONException {
         return (boolean)get(path);
     }
 
-    public int getInt(String path) throws JSONException {
+    public int getInt(String path) throws EasyJSONException {
         return (int)get(path);
     }
 
-    public double getDouble(String path) throws JSONException {
+    public double getDouble(String path) throws EasyJSONException {
         return (double)get(path);
     }
 
-    public String getString(String path) throws JSONException {
+    public String getString(String path) throws EasyJSONException {
         return (String)get(path);
     }
 
@@ -129,7 +128,7 @@ public class EasyJSONObject {
         boolean exists = true;
         try {
             get(path);
-        } catch (JSONException e) {
+        } catch (EasyJSONException e) {
             e.printStackTrace();
             exists = false;
         }

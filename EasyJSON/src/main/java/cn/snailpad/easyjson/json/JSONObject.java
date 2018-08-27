@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import cn.snailpad.easyjson.EasyJSONException;
+
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
 /**
@@ -58,7 +60,7 @@ import java.util.Set;
  * <p>This class can look up both mandatory and optional values:
  * <ul>
  *   <li>Use <code>get<i>Type</i>()</code> to retrieve a mandatory value. This
- *       fails with a {@code JSONException} if the requested name has no value
+ *       fails with a {@code EasyJSONException} if the requested name has no value
  *       or if the value cannot be coerced to the requested type.
  *   <li>Use <code>opt<i>Type</i>()</code> to retrieve an optional value. This
  *       returns a system- or user-supplied default if the requested name has no
@@ -145,10 +147,10 @@ public class JSONObject {
      *
      * @param readFrom a tokener whose nextValue() method will yield a
      *     {@code JSONObject}.
-     * @throws JSONException if the parse fails or doesn't yield a
+     * @throws EasyJSONException if the parse fails or doesn't yield a
      *     {@code JSONObject}.
      */
-    public JSONObject(JSONTokener readFrom) throws JSONException {
+    public JSONObject(JSONTokener readFrom) throws EasyJSONException {
         /*
          * Getting the parser to populate this could get tricky. Instead, just
          * parse to temporary JSONObject and then steal the data from that.
@@ -166,10 +168,10 @@ public class JSONObject {
      * string.
      *
      * @param json a JSON-encoded string containing an object.
-     * @throws JSONException if the parse fails or doesn't yield a {@code
+     * @throws EasyJSONException if the parse fails or doesn't yield a {@code
      *     JSONObject}.
      */
-    public JSONObject(String json) throws JSONException {
+    public JSONObject(String json) throws EasyJSONException {
         this(new JSONTokener(json));
     }
 
@@ -178,7 +180,7 @@ public class JSONObject {
      * from the given object. Names that aren't present in {@code copyFrom} will
      * be skipped.
      */
-    public JSONObject(JSONObject copyFrom, String[] names) throws JSONException {
+    public JSONObject(JSONObject copyFrom, String[] names) throws EasyJSONException {
         this();
         for (String name : names) {
             Object value = copyFrom.opt(name);
@@ -201,7 +203,7 @@ public class JSONObject {
      *
      * @return this object.
      */
-    public JSONObject put(String name, boolean value) throws JSONException {
+    public JSONObject put(String name, boolean value) throws EasyJSONException {
         nameValuePairs.put(checkName(name), value);
         return this;
     }
@@ -214,7 +216,7 @@ public class JSONObject {
      *     {@link Double#isInfinite() infinities}.
      * @return this object.
      */
-    public JSONObject put(String name, double value) throws JSONException {
+    public JSONObject put(String name, double value) throws EasyJSONException {
         nameValuePairs.put(checkName(name), JSON.checkDouble(value));
         return this;
     }
@@ -225,7 +227,7 @@ public class JSONObject {
      *
      * @return this object.
      */
-    public JSONObject put(String name, int value) throws JSONException {
+    public JSONObject put(String name, int value) throws EasyJSONException {
         nameValuePairs.put(checkName(name), value);
         return this;
     }
@@ -236,7 +238,7 @@ public class JSONObject {
      *
      * @return this object.
      */
-    public JSONObject put(String name, long value) throws JSONException {
+    public JSONObject put(String name, long value) throws EasyJSONException {
         nameValuePairs.put(checkName(name), value);
         return this;
     }
@@ -252,7 +254,7 @@ public class JSONObject {
      *     infinities}.
      * @return this object.
      */
-    public JSONObject put(String name, Object value) throws JSONException {
+    public JSONObject put(String name, Object value) throws EasyJSONException {
         if (value == null) {
             nameValuePairs.remove(name);
             return this;
@@ -269,7 +271,7 @@ public class JSONObject {
      * Equivalent to {@code put(name, value)} when both parameters are non-null;
      * does nothing otherwise.
      */
-    public JSONObject putOpt(String name, Object value) throws JSONException {
+    public JSONObject putOpt(String name, Object value) throws EasyJSONException {
         if (name == null || value == null) {
             return this;
         }
@@ -296,7 +298,7 @@ public class JSONObject {
      */
     // TODO: Change {@code append) to {@link #append} when append is
     // unhidden.
-    public JSONObject accumulate(String name, Object value) throws JSONException {
+    public JSONObject accumulate(String name, Object value) throws EasyJSONException {
         Object current = nameValuePairs.get(checkName(name));
         if (current == null) {
             return put(name, value);
@@ -317,15 +319,15 @@ public class JSONObject {
     /**
      * Appends values to the array mapped to {@code name}. A new {@link JSONArray}
      * mapping for {@code name} will be inserted if no mapping exists. If the existing
-     * mapping for {@code name} is not a {@link JSONArray}, a {@link JSONException}
+     * mapping for {@code name} is not a {@link JSONArray}, a {@link EasyJSONException}
      * will be thrown.
      *
-     * @throws JSONException if {@code name} is {@code null} or if the mapping for
+     * @throws EasyJSONException if {@code name} is {@code null} or if the mapping for
      *         {@code name} is non-null and is not a {@link JSONArray}.
      *
      * @hide
      */
-    public JSONObject append(String name, Object value) throws JSONException {
+    public JSONObject append(String name, Object value) throws EasyJSONException {
         Object current = nameValuePairs.get(checkName(name));
 
         final JSONArray array;
@@ -336,7 +338,7 @@ public class JSONObject {
             nameValuePairs.put(name, newArray);
             array = newArray;
         } else {
-            throw new JSONException("Key " + name + " is not a JSONArray");
+            throw new EasyJSONException("Key " + name + " is not a JSONArray");
         }
 
         array.checkedPut(value);
@@ -344,9 +346,9 @@ public class JSONObject {
         return this;
     }
 
-    String checkName(String name) throws JSONException {
+    String checkName(String name) throws EasyJSONException {
         if (name == null) {
-            throw new JSONException("Names must be non-null");
+            throw new EasyJSONException("Names must be non-null");
         }
         return name;
     }
@@ -381,12 +383,12 @@ public class JSONObject {
     /**
      * Returns the value mapped by {@code name}, or throws if no such mapping exists.
      *
-     * @throws JSONException if no such mapping exists.
+     * @throws EasyJSONException if no such mapping exists.
      */
-    public Object get(String name) throws JSONException {
+    public Object get(String name) throws EasyJSONException {
         Object result = nameValuePairs.get(name);
         if (result == null) {
-            throw new JSONException("No value for " + name);
+            throw new EasyJSONException("No value for " + name);
         }
         return result;
     }
@@ -403,10 +405,10 @@ public class JSONObject {
      * Returns the value mapped by {@code name} if it exists and is a boolean or
      * can be coerced to a boolean, or throws otherwise.
      *
-     * @throws JSONException if the mapping doesn't exist or cannot be coerced
+     * @throws EasyJSONException if the mapping doesn't exist or cannot be coerced
      *     to a boolean.
      */
-    public boolean getBoolean(String name) throws JSONException {
+    public boolean getBoolean(String name) throws EasyJSONException {
         Object object = get(name);
         Boolean result = JSON.toBoolean(object);
         if (result == null) {
@@ -437,10 +439,10 @@ public class JSONObject {
      * Returns the value mapped by {@code name} if it exists and is a double or
      * can be coerced to a double, or throws otherwise.
      *
-     * @throws JSONException if the mapping doesn't exist or cannot be coerced
+     * @throws EasyJSONException if the mapping doesn't exist or cannot be coerced
      *     to a double.
      */
-    public double getDouble(String name) throws JSONException {
+    public double getDouble(String name) throws EasyJSONException {
         Object object = get(name);
         Double result = JSON.toDouble(object);
         if (result == null) {
@@ -471,10 +473,10 @@ public class JSONObject {
      * Returns the value mapped by {@code name} if it exists and is an int or
      * can be coerced to an int, or throws otherwise.
      *
-     * @throws JSONException if the mapping doesn't exist or cannot be coerced
+     * @throws EasyJSONException if the mapping doesn't exist or cannot be coerced
      *     to an int.
      */
-    public int getInt(String name) throws JSONException {
+    public int getInt(String name) throws EasyJSONException {
         Object object = get(name);
         Integer result = JSON.toInteger(object);
         if (result == null) {
@@ -507,10 +509,10 @@ public class JSONObject {
      * Note that JSON represents numbers as doubles,
      * so this is <a href="#lossy">lossy</a>; use strings to transfer numbers via JSON.
      *
-     * @throws JSONException if the mapping doesn't exist or cannot be coerced
+     * @throws EasyJSONException if the mapping doesn't exist or cannot be coerced
      *     to a long.
      */
-    public long getLong(String name) throws JSONException {
+    public long getLong(String name) throws EasyJSONException {
         Object object = get(name);
         Long result = JSON.toLong(object);
         if (result == null) {
@@ -544,9 +546,9 @@ public class JSONObject {
      * Returns the value mapped by {@code name} if it exists, coercing it if
      * necessary, or throws if no such mapping exists.
      *
-     * @throws JSONException if no such mapping exists.
+     * @throws EasyJSONException if no such mapping exists.
      */
-    public String getString(String name) throws JSONException {
+    public String getString(String name) throws EasyJSONException {
         Object object = get(name);
         String result = JSON.toString(object);
         if (result == null) {
@@ -577,10 +579,10 @@ public class JSONObject {
      * Returns the value mapped by {@code name} if it exists and is a {@code
      * JSONArray}, or throws otherwise.
      *
-     * @throws JSONException if the mapping doesn't exist or is not a {@code
+     * @throws EasyJSONException if the mapping doesn't exist or is not a {@code
      *     JSONArray}.
      */
-    public JSONArray getJSONArray(String name) throws JSONException {
+    public JSONArray getJSONArray(String name) throws EasyJSONException {
         Object object = get(name);
         if (object instanceof JSONArray) {
             return (JSONArray) object;
@@ -602,10 +604,10 @@ public class JSONObject {
      * Returns the value mapped by {@code name} if it exists and is a {@code
      * JSONObject}, or throws otherwise.
      *
-     * @throws JSONException if the mapping doesn't exist or is not a {@code
+     * @throws EasyJSONException if the mapping doesn't exist or is not a {@code
      *     JSONObject}.
      */
-    public JSONObject getJSONObject(String name) throws JSONException {
+    public JSONObject getJSONObject(String name) throws EasyJSONException {
         Object object = get(name);
         if (object instanceof JSONObject) {
             return (JSONObject) object;
@@ -628,7 +630,7 @@ public class JSONObject {
      * array contains null for names that aren't mapped. This method returns
      * null if {@code names} is either null or empty.
      */
-    public JSONArray toJSONArray(JSONArray names) throws JSONException {
+    public JSONArray toJSONArray(JSONArray names) throws EasyJSONException {
         JSONArray result = new JSONArray();
         if (names == null) {
             return null;
@@ -688,7 +690,7 @@ public class JSONObject {
             JSONStringer stringer = new JSONStringer();
             writeTo(stringer);
             return stringer.toString();
-        } catch (JSONException e) {
+        } catch (EasyJSONException e) {
             return null;
         }
     }
@@ -708,13 +710,13 @@ public class JSONObject {
      * @param indentSpaces the number of spaces to indent for each level of
      *     nesting.
      */
-    public String toString(int indentSpaces) throws JSONException {
+    public String toString(int indentSpaces) throws EasyJSONException {
         JSONStringer stringer = new JSONStringer(indentSpaces);
         writeTo(stringer);
         return stringer.toString();
     }
 
-    void writeTo(JSONStringer stringer) throws JSONException {
+    void writeTo(JSONStringer stringer) throws EasyJSONException {
         stringer.object();
         for (Map.Entry<String, Object> entry : nameValuePairs.entrySet()) {
             stringer.key(entry.getKey()).value(entry.getValue());
@@ -728,9 +730,9 @@ public class JSONObject {
      * @param number a finite value. May not be {@link Double#isNaN() NaNs} or
      *     {@link Double#isInfinite() infinities}.
      */
-    public static String numberToString(Number number) throws JSONException {
+    public static String numberToString(Number number) throws EasyJSONException {
         if (number == null) {
-            throw new JSONException("Number must be non-null");
+            throw new EasyJSONException("Number must be non-null");
         }
 
         double doubleValue = number.doubleValue();
@@ -766,7 +768,7 @@ public class JSONObject {
             stringer.value(data);
             stringer.close(JSONStringer.Scope.NULL, JSONStringer.Scope.NULL, "");
             return stringer.toString();
-        } catch (JSONException e) {
+        } catch (EasyJSONException e) {
             throw new AssertionError();
         }
     }

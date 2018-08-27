@@ -2,7 +2,6 @@ package cn.snailpad.easyjson;
 
 import java.util.HashMap;
 
-import cn.snailpad.easyjson.json.JSONException;
 import cn.snailpad.easyjson.json.JSONObject;
 
 /**
@@ -83,9 +82,9 @@ public class EasyJSONMap extends HashMap<String, Object> {
      * 以格式化的形式输出json字符串
      * @param indentSpaces 缩进空格数
      * @return
-     * @throws JSONException
+     * @throws EasyJSONException
      */
-    public String toString(int indentSpaces) throws JSONException {
+    public String toString(int indentSpaces) throws EasyJSONException {
         return (new JSONObject(this)).toString(indentSpaces);
     }
 }

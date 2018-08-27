@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cn.snailpad.easyjson.json;
+package cn.snailpad.easyjson;
 
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
@@ -36,14 +36,14 @@ package cn.snailpad.easyjson.json;
  *     try {
  *         JSONObject result = new JSONObject();
  *         ...
- *     } catch (JSONException e) {
+ *     } catch (EasyJSONException e) {
  *         throw new RuntimeException(e);
  *     }
  * }</pre>
  */
-public class JSONException extends Exception {
+public class EasyJSONException extends Exception {
 
-    public JSONException(String s) {
+    public EasyJSONException(String s) {
         super(s);
     }
 }

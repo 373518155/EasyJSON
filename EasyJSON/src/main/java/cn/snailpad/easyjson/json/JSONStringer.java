@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cn.snailpad.easyjson.EasyJSONException;
+
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
 /**
@@ -41,7 +43,7 @@ import java.util.List;
  *       calls, or by nesting arrays or objects.
  * </ul>
  * Calls that would result in a malformed JSON string will fail with a
- * {@link JSONException}.
+ * {@link EasyJSONException}.
  *
  * <p>This class provides no facility for pretty-printing (ie. indenting)
  * output. To encode indented output, use {@link JSONObject#toString(int)} or
@@ -49,7 +51,7 @@ import java.util.List;
  *
  * <p>Some implementations of the API support at most 20 levels of nesting.
  * Attempts to create more than 20 levels of nesting may fail with a {@link
- * JSONException}.
+ * EasyJSONException}.
  *
  * <p>Each stringer may be used to encode a single top level value. Instances of
  * this class are not thread safe. Although this class is nonfinal, it was not
@@ -135,7 +137,7 @@ public class JSONStringer {
      *
      * @return this stringer.
      */
-    public JSONStringer array() throws JSONException {
+    public JSONStringer array() throws EasyJSONException {
         return open(Scope.EMPTY_ARRAY, "[");
     }
 
@@ -144,7 +146,7 @@ public class JSONStringer {
      *
      * @return this stringer.
      */
-    public JSONStringer endArray() throws JSONException {
+    public JSONStringer endArray() throws EasyJSONException {
         return close(Scope.EMPTY_ARRAY, Scope.NONEMPTY_ARRAY, "]");
     }
 
@@ -154,7 +156,7 @@ public class JSONStringer {
      *
      * @return this stringer.
      */
-    public JSONStringer object() throws JSONException {
+    public JSONStringer object() throws EasyJSONException {
         return open(Scope.EMPTY_OBJECT, "{");
     }
 
@@ -163,7 +165,7 @@ public class JSONStringer {
      *
      * @return this stringer.
      */
-    public JSONStringer endObject() throws JSONException {
+    public JSONStringer endObject() throws EasyJSONException {
         return close(Scope.EMPTY_OBJECT, Scope.NONEMPTY_OBJECT, "}");
     }
 
@@ -171,9 +173,9 @@ public class JSONStringer {
      * Enters a new scope by appending any necessary whitespace and the given
      * bracket.
      */
-    JSONStringer open(Scope empty, String openBracket) throws JSONException {
+    JSONStringer open(Scope empty, String openBracket) throws EasyJSONException {
         if (stack.isEmpty() && out.length() > 0) {
-            throw new JSONException("Nesting problem: multiple top-level roots");
+            throw new EasyJSONException("Nesting problem: multiple top-level roots");
         }
         beforeValue();
         stack.add(empty);
@@ -185,10 +187,10 @@ public class JSONStringer {
      * Closes the current scope by appending any necessary whitespace and the
      * given bracket.
      */
-    JSONStringer close(Scope empty, Scope nonempty, String closeBracket) throws JSONException {
+    JSONStringer close(Scope empty, Scope nonempty, String closeBracket) throws EasyJSONException {
         Scope context = peek();
         if (context != nonempty && context != empty) {
-            throw new JSONException("Nesting problem");
+            throw new EasyJSONException("Nesting problem");
         }
 
         stack.remove(stack.size() - 1);
@@ -202,9 +204,9 @@ public class JSONStringer {
     /**
      * Returns the value on the top of the stack.
      */
-    private Scope peek() throws JSONException {
+    private Scope peek() throws EasyJSONException {
         if (stack.isEmpty()) {
-            throw new JSONException("Nesting problem");
+            throw new EasyJSONException("Nesting problem");
         }
         return stack.get(stack.size() - 1);
     }
@@ -224,9 +226,9 @@ public class JSONStringer {
      *     or {@link Double#isInfinite() infinities}.
      * @return this stringer.
      */
-    public JSONStringer value(Object value) throws JSONException {
+    public JSONStringer value(Object value) throws EasyJSONException {
         if (stack.isEmpty()) {
-            throw new JSONException("Nesting problem");
+            throw new EasyJSONException("Nesting problem");
         }
 
         if (value instanceof JSONArray) {
@@ -260,9 +262,9 @@ public class JSONStringer {
      *
      * @return this stringer.
      */
-    public JSONStringer value(boolean value) throws JSONException {
+    public JSONStringer value(boolean value) throws EasyJSONException {
         if (stack.isEmpty()) {
-            throw new JSONException("Nesting problem");
+            throw new EasyJSONException("Nesting problem");
         }
         beforeValue();
         out.append(value);
@@ -276,9 +278,9 @@ public class JSONStringer {
      *     {@link Double#isInfinite() infinities}.
      * @return this stringer.
      */
-    public JSONStringer value(double value) throws JSONException {
+    public JSONStringer value(double value) throws EasyJSONException {
         if (stack.isEmpty()) {
-            throw new JSONException("Nesting problem");
+            throw new EasyJSONException("Nesting problem");
         }
         beforeValue();
         out.append(JSONObject.numberToString(value));
@@ -290,9 +292,9 @@ public class JSONStringer {
      *
      * @return this stringer.
      */
-    public JSONStringer value(long value) throws JSONException {
+    public JSONStringer value(long value) throws EasyJSONException {
         if (stack.isEmpty()) {
-            throw new JSONException("Nesting problem");
+            throw new EasyJSONException("Nesting problem");
         }
         beforeValue();
         out.append(value);
@@ -367,9 +369,9 @@ public class JSONStringer {
      * @param name the name of the forthcoming value. May not be null.
      * @return this stringer.
      */
-    public JSONStringer key(String name) throws JSONException {
+    public JSONStringer key(String name) throws EasyJSONException {
         if (name == null) {
-            throw new JSONException("Names must be non-null");
+            throw new EasyJSONException("Names must be non-null");
         }
         beforeKey();
         string(name);
@@ -380,12 +382,12 @@ public class JSONStringer {
      * Inserts any necessary separators and whitespace before a name. Also
      * adjusts the stack to expect the key's value.
      */
-    private void beforeKey() throws JSONException {
+    private void beforeKey() throws EasyJSONException {
         Scope context = peek();
         if (context == Scope.NONEMPTY_OBJECT) { // first in object
             out.append(',');
         } else if (context != Scope.EMPTY_OBJECT) { // not in an object!
-            throw new JSONException("Nesting problem");
+            throw new EasyJSONException("Nesting problem");
         }
         newline();
         replaceTop(Scope.DANGLING_KEY);
@@ -396,7 +398,7 @@ public class JSONStringer {
      * inline array, or inline object. Also adjusts the stack to expect either a
      * closing bracket or another element.
      */
-    private void beforeValue() throws JSONException {
+    private void beforeValue() throws EasyJSONException {
         if (stack.isEmpty()) {
             return;
         }
@@ -412,7 +414,7 @@ public class JSONStringer {
             out.append(indent == null ? ":" : ": ");
             replaceTop(Scope.NONEMPTY_OBJECT);
         } else if (context != Scope.NULL) {
-            throw new JSONException("Nesting problem");
+            throw new EasyJSONException("Nesting problem");
         }
     }
 

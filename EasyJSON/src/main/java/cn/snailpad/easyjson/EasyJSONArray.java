@@ -4,7 +4,6 @@ package cn.snailpad.easyjson;
 import java.util.Iterator;
 
 import cn.snailpad.easyjson.json.JSONArray;
-import cn.snailpad.easyjson.json.JSONException;
 
 /**
  * 参考  https://developer.android.google.cn/reference/org/json/JSONArray.html
@@ -15,7 +14,7 @@ public class EasyJSONArray implements Iterable<EasyJSONObject> {
     public EasyJSONArray(String json) {
         try {
             jsonArray = new JSONArray(json);
-        } catch (JSONException e) {
+        } catch (EasyJSONException e) {
             e.printStackTrace();
         }
     }
@@ -38,7 +37,7 @@ public class EasyJSONArray implements Iterable<EasyJSONObject> {
                 EasyJSONObject easyJSONObject = null;
                 try {
                     easyJSONObject = new EasyJSONObject(jsonArray.getJSONObject(index++));
-                } catch (JSONException e) {
+                } catch (EasyJSONException e) {
                     e.printStackTrace();
                 }
                 return easyJSONObject;

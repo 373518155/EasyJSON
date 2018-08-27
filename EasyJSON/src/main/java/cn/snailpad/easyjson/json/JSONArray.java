@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import cn.snailpad.easyjson.EasyJSONException;
+
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
 /**
@@ -81,10 +83,10 @@ public class JSONArray {
      *
      * @param readFrom a tokener whose nextValue() method will yield a
      *     {@code JSONArray}.
-     * @throws JSONException if the parse fails or doesn't yield a
+     * @throws EasyJSONException if the parse fails or doesn't yield a
      *     {@code JSONArray}.
      */
-    public JSONArray(JSONTokener readFrom) throws JSONException {
+    public JSONArray(JSONTokener readFrom) throws EasyJSONException {
         /*
          * Getting the parser to populate this could get tricky. Instead, just
          * parse to temporary JSONArray and then steal the data from that.
@@ -101,19 +103,19 @@ public class JSONArray {
      * Creates a new {@code JSONArray} with values from the JSON string.
      *
      * @param json a JSON-encoded string containing an array.
-     * @throws JSONException if the parse fails or doesn't yield a {@code
+     * @throws EasyJSONException if the parse fails or doesn't yield a {@code
      *     JSONArray}.
      */
-    public JSONArray(String json) throws JSONException {
+    public JSONArray(String json) throws EasyJSONException {
         this(new JSONTokener(json));
     }
 
     /**
      * Creates a new {@code JSONArray} with values from the given primitive array.
      */
-    public JSONArray(Object array) throws JSONException {
+    public JSONArray(Object array) throws EasyJSONException {
         if (!array.getClass().isArray()) {
-            throw new JSONException("Not a primitive array: " + array.getClass());
+            throw new EasyJSONException("Not a primitive array: " + array.getClass());
         }
         final int length = Array.getLength(array);
         values = new ArrayList<Object>(length);
@@ -146,7 +148,7 @@ public class JSONArray {
      *     {@link Double#isInfinite() infinities}.
      * @return this array.
      */
-    public JSONArray put(double value) throws JSONException {
+    public JSONArray put(double value) throws EasyJSONException {
         values.add(JSON.checkDouble(value));
         return this;
     }
@@ -189,7 +191,7 @@ public class JSONArray {
     /**
      * Same as {@link #put}, with added validity checks.
      */
-    void checkedPut(Object value) throws JSONException {
+    void checkedPut(Object value) throws EasyJSONException {
         if (value instanceof Number) {
             JSON.checkDouble(((Number) value).doubleValue());
         }
@@ -204,7 +206,7 @@ public class JSONArray {
      *
      * @return this array.
      */
-    public JSONArray put(int index, boolean value) throws JSONException {
+    public JSONArray put(int index, boolean value) throws EasyJSONException {
         return put(index, (Boolean) value);
     }
 
@@ -217,7 +219,7 @@ public class JSONArray {
      *     {@link Double#isInfinite() infinities}.
      * @return this array.
      */
-    public JSONArray put(int index, double value) throws JSONException {
+    public JSONArray put(int index, double value) throws EasyJSONException {
         return put(index, (Double) value);
     }
 
@@ -228,7 +230,7 @@ public class JSONArray {
      *
      * @return this array.
      */
-    public JSONArray put(int index, int value) throws JSONException {
+    public JSONArray put(int index, int value) throws EasyJSONException {
         return put(index, (Integer) value);
     }
 
@@ -239,7 +241,7 @@ public class JSONArray {
      *
      * @return this array.
      */
-    public JSONArray put(int index, long value) throws JSONException {
+    public JSONArray put(int index, long value) throws EasyJSONException {
         return put(index, (Long) value);
     }
 
@@ -254,7 +256,7 @@ public class JSONArray {
      *     infinities}.
      * @return this array.
      */
-    public JSONArray put(int index, Object value) throws JSONException {
+    public JSONArray put(int index, Object value) throws EasyJSONException {
         if (value instanceof Number) {
             // deviate from the original by checking all Numbers, not just floats & doubles
             JSON.checkDouble(((Number) value).doubleValue());
@@ -278,19 +280,19 @@ public class JSONArray {
     /**
      * Returns the value at {@code index}.
      *
-     * @throws JSONException if this array has no value at {@code index}, or if
+     * @throws EasyJSONException if this array has no value at {@code index}, or if
      *     that value is the {@code null} reference. This method returns
      *     normally if the value is {@code JSONObject#NULL}.
      */
-    public Object get(int index) throws JSONException {
+    public Object get(int index) throws EasyJSONException {
         try {
             Object value = values.get(index);
             if (value == null) {
-                throw new JSONException("Value at " + index + " is null.");
+                throw new EasyJSONException("Value at " + index + " is null.");
             }
             return value;
         } catch (IndexOutOfBoundsException e) {
-            throw new JSONException("Index " + index + " out of range [0.." + values.size() + ")");
+            throw new EasyJSONException("Index " + index + " out of range [0.." + values.size() + ")");
         }
     }
 
@@ -320,10 +322,10 @@ public class JSONArray {
      * Returns the value at {@code index} if it exists and is a boolean or can
      * be coerced to a boolean.
      *
-     * @throws JSONException if the value at {@code index} doesn't exist or
+     * @throws EasyJSONException if the value at {@code index} doesn't exist or
      *     cannot be coerced to a boolean.
      */
-    public boolean getBoolean(int index) throws JSONException {
+    public boolean getBoolean(int index) throws EasyJSONException {
         Object object = get(index);
         Boolean result = JSON.toBoolean(object);
         if (result == null) {
@@ -354,10 +356,10 @@ public class JSONArray {
      * Returns the value at {@code index} if it exists and is a double or can
      * be coerced to a double.
      *
-     * @throws JSONException if the value at {@code index} doesn't exist or
+     * @throws EasyJSONException if the value at {@code index} doesn't exist or
      *     cannot be coerced to a double.
      */
-    public double getDouble(int index) throws JSONException {
+    public double getDouble(int index) throws EasyJSONException {
         Object object = get(index);
         Double result = JSON.toDouble(object);
         if (result == null) {
@@ -388,10 +390,10 @@ public class JSONArray {
      * Returns the value at {@code index} if it exists and is an int or
      * can be coerced to an int.
      *
-     * @throws JSONException if the value at {@code index} doesn't exist or
+     * @throws EasyJSONException if the value at {@code index} doesn't exist or
      *     cannot be coerced to a int.
      */
-    public int getInt(int index) throws JSONException {
+    public int getInt(int index) throws EasyJSONException {
         Object object = get(index);
         Integer result = JSON.toInteger(object);
         if (result == null) {
@@ -422,10 +424,10 @@ public class JSONArray {
      * Returns the value at {@code index} if it exists and is a long or
      * can be coerced to a long.
      *
-     * @throws JSONException if the value at {@code index} doesn't exist or
+     * @throws EasyJSONException if the value at {@code index} doesn't exist or
      *     cannot be coerced to a long.
      */
-    public long getLong(int index) throws JSONException {
+    public long getLong(int index) throws EasyJSONException {
         Object object = get(index);
         Long result = JSON.toLong(object);
         if (result == null) {
@@ -456,9 +458,9 @@ public class JSONArray {
      * Returns the value at {@code index} if it exists, coercing it if
      * necessary.
      *
-     * @throws JSONException if no such value exists.
+     * @throws EasyJSONException if no such value exists.
      */
-    public String getString(int index) throws JSONException {
+    public String getString(int index) throws EasyJSONException {
         Object object = get(index);
         String result = JSON.toString(object);
         if (result == null) {
@@ -489,10 +491,10 @@ public class JSONArray {
      * Returns the value at {@code index} if it exists and is a {@code
      * JSONArray}.
      *
-     * @throws JSONException if the value doesn't exist or is not a {@code
+     * @throws EasyJSONException if the value doesn't exist or is not a {@code
      *     JSONArray}.
      */
-    public JSONArray getJSONArray(int index) throws JSONException {
+    public JSONArray getJSONArray(int index) throws EasyJSONException {
         Object object = get(index);
         if (object instanceof JSONArray) {
             return (JSONArray) object;
@@ -514,10 +516,10 @@ public class JSONArray {
      * Returns the value at {@code index} if it exists and is a {@code
      * JSONObject}.
      *
-     * @throws JSONException if the value doesn't exist or is not a {@code
+     * @throws EasyJSONException if the value doesn't exist or is not a {@code
      *     JSONObject}.
      */
-    public JSONObject getJSONObject(int index) throws JSONException {
+    public JSONObject getJSONObject(int index) throws EasyJSONException {
         Object object = get(index);
         if (object instanceof JSONObject) {
             return (JSONObject) object;
@@ -542,7 +544,7 @@ public class JSONArray {
      * strings will be coerced to strings. This method returns null if either
      * array is empty.
      */
-    public JSONObject toJSONObject(JSONArray names) throws JSONException {
+    public JSONObject toJSONObject(JSONArray names) throws EasyJSONException {
         JSONObject result = new JSONObject();
         int length = Math.min(names.length(), values.size());
         if (length == 0) {
@@ -562,7 +564,7 @@ public class JSONArray {
      * pizza', 'taco' and 'soda' joined on '+' returns this:
      * <pre>"12\" pizza"+"taco"+"soda"</pre>
      */
-    public String join(String separator) throws JSONException {
+    public String join(String separator) throws EasyJSONException {
         JSONStringer stringer = new JSONStringer();
         stringer.open(JSONStringer.Scope.NULL, "");
         for (int i = 0, size = values.size(); i < size; i++) {
@@ -584,7 +586,7 @@ public class JSONArray {
             JSONStringer stringer = new JSONStringer();
             writeTo(stringer);
             return stringer.toString();
-        } catch (JSONException e) {
+        } catch (EasyJSONException e) {
             return null;
         }
     }
@@ -601,13 +603,13 @@ public class JSONArray {
      * @param indentSpaces the number of spaces to indent for each level of
      *     nesting.
      */
-    public String toString(int indentSpaces) throws JSONException {
+    public String toString(int indentSpaces) throws EasyJSONException {
         JSONStringer stringer = new JSONStringer(indentSpaces);
         writeTo(stringer);
         return stringer.toString();
     }
 
-    void writeTo(JSONStringer stringer) throws JSONException {
+    void writeTo(JSONStringer stringer) throws EasyJSONException {
         stringer.array();
         for (Object value : values) {
             stringer.value(value);
