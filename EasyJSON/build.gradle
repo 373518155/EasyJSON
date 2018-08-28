@@ -14,6 +14,15 @@ https://github.com/novoda/bintray-release
 https://github.com/bintray/gradle-bintray-plugin   这是官方的
 
 
+打tag相关命令
+对当前commit打tag
+git tag -a "v1.0.0" -m "初始版本"
+对指定commit打tag
+git tag -a "v1.0.0" b83cf207958838b4f42415ed654610843ce9d438 -m "初始版本"
+推送tag到远端
+git push origin master --tags
+
+
 相关命令(先在Android Studio底部打开 Terminal标签)
 生成jar包的命令
 gradlew install(还有gradlew sourcesJar、 gradlew javadocJar这些命令可以试试)
