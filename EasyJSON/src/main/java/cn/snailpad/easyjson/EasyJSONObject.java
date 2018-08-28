@@ -116,7 +116,7 @@ public class EasyJSONObject {
     }
 
     public String getString(String path) throws EasyJSONException {
-        return (String)get(path);
+        return get(path).toString();
     }
 
     /**
