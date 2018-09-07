@@ -1,6 +1,7 @@
 package cn.snailpad.easyjson;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,6 +31,41 @@ public class EasyJSONList {
         for (Object arg : args) {
             list.add(arg);
         }
+    }
+
+
+    /**
+     * 用另一个List构造EasyJSONList
+     * @param anotherList
+     * 不能有这个构造方法，因为会把整个anotherList当作一个元素，优先调用 public EasyJSONList(Object... args); 这个方法
+     */
+    /*
+    public EasyJSONList(List<Object> anotherList) {
+        if (anotherList == null) {
+            return;
+        }
+        for (Object obj : anotherList) {
+            list.add(obj);
+        }
+    }
+    */
+
+
+    public boolean add(Object obj) {
+        return list.add(obj);
+    }
+
+    /*
+    使用方法:
+    List<Integer> intList = new ArrayList<>();
+        intList.add(1);
+        intList.add(3);
+        intList.add(5);
+        easyJSONList = new EasyJSONList();
+        easyJSONList.addCollection(intList);  // 输出: [1, 3, 5]
+     */
+    public boolean addCollection(Collection collection) {
+        return list.addAll(collection);
     }
 
     @Override
