@@ -1,7 +1,9 @@
 package cn.snailpad.easyjson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import cn.snailpad.easyjson.json.JSONArray;
 import cn.snailpad.easyjson.json.JSONObject;
 
 /**
@@ -50,6 +52,28 @@ System.out.println(new EasyJSONMap(
     "y": false
   }
 }
+
+
+EasyJSONList data2 = new EasyJSONList();
+for (int i = 0; i < 5; ++i) {
+    data2.add(i);
+}
+EasyJSONMap response = new EasyJSONMap(
+        "c", "Sqlite",
+        "a", "response",
+        "data", new EasyJSONList("test", 1, true),
+        "data2", data2
+);
+
+// response.toString();
+// 返回 {"a":"response","c":"Sqlite","data":["test",1,true],"data2":[0,1,2,3,4]}
+
+
+EasyJSONList easyJSONList = new EasyJSONList(response, 234);
+// easyJSONList.toString();
+// 返回 [{"a":"response","c":"Sqlite","data":["test",1,true],"data2":[0,1,2,3,4]}, 234]
+
+
 */
 
 public class EasyJSONMap extends HashMap<String, Object> {
@@ -67,6 +91,9 @@ public class EasyJSONMap extends HashMap<String, Object> {
                 key = (String)arg;
             }
             else {
+                if (arg instanceof EasyJSONList) {
+                    arg = new JSONArray(((EasyJSONList) arg).getList());
+                }
                 put(key, arg);
             }
             ++count;

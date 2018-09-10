@@ -92,4 +92,8 @@ public class EasyJSONList {
 
         return sb.toString();
     }
+
+    public List<Object> getList() {
+        return list;
+    }
 }
