@@ -91,9 +91,6 @@ public class EasyJSONMap extends HashMap<String, Object> {
                 key = (String)arg;
             }
             else {
-                if (arg instanceof EasyJSONList) {
-                    arg = new JSONArray(((EasyJSONList) arg).getList());
-                }
                 put(key, arg);
             }
             ++count;

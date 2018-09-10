@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import cn.snailpad.easyjson.EasyJSONException;
+import cn.snailpad.easyjson.EasyJSONList;
 
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
@@ -788,6 +789,10 @@ public class JSONObject {
     public static Object wrap(Object o) {
         if (o == null) {
             return NULL;
+        }
+
+        if (o instanceof EasyJSONList) {  // 将EasyJSONList转为Collection类型
+            o = ((EasyJSONList) o).getList();
         }
         if (o instanceof JSONArray || o instanceof JSONObject) {
             return o;
