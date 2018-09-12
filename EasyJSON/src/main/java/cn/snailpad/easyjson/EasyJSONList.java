@@ -2,6 +2,7 @@ package cn.snailpad.easyjson;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ EasyJSONList easyJSONList = new EasyJSONList(1, 2, true, "abc", 3.14, new EasyJS
  */
 
 
-public class EasyJSONList {
+public class EasyJSONList implements Iterable<Object> {
 
     private static final String DOUBLE_QUOTATION_MARK = "\"";
 
@@ -36,7 +37,6 @@ public class EasyJSONList {
 
     /**
      * 用另一个List构造EasyJSONList
-     * @param anotherList
      * 不能有这个构造方法，因为会把整个anotherList当作一个元素，优先调用 public EasyJSONList(Object... args); 这个方法
      */
     /*
@@ -95,5 +95,29 @@ public class EasyJSONList {
 
     public List<Object> getList() {
         return list;
+    }
+
+    /**
+     * 叫做length()，与EasyJSONArray的统一
+     * @return
+     */
+    public int length() {
+        return list.size();
+    }
+
+    @Override
+    public Iterator<Object> iterator() {
+        return new Iterator<Object>() {
+            private int index = 0;
+            @Override
+            public boolean hasNext() {
+                return index < list.size();
+            }
+
+            @Override
+            public Object next() {
+                return list.get(index++);
+            }
+        };
     }
 }

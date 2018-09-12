@@ -14,7 +14,7 @@ EasyJSON库就是为了方便上述两种操作而诞生的。
 
 ### 引用库文件
 在模块的gradle文件中引用库文件
-> compile 'cn.snailpad:EasyJSON:1.0.3'
+> compile 'cn.snailpad:EasyJSON:1.0.7'
 
 引入好库文件后，就可以使用了，下面说明一下使用方法
 
