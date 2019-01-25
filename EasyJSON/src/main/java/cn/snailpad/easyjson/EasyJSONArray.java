@@ -1,31 +1,162 @@
 package cn.snailpad.easyjson;
 
 
+import cn.snailpad.easyjson.json.JSONArray;
+import cn.snailpad.easyjson.json.JSONObject;
+
 import java.util.Iterator;
 
-import cn.snailpad.easyjson.json.JSONArray;
-
-/**
- * 参考  https://developer.android.google.cn/reference/org/json/JSONArray.html
- */
-public class EasyJSONArray implements Iterable<EasyJSONObject> {
+public class EasyJSONArray extends EasyJSONBase implements Iterable<Object> {
+    /**
+     * EasyJSONArray的内部表示
+     */
     private JSONArray jsonArray;
 
-    public EasyJSONArray(String json) {
+    /**
+     * 生成一个EasyJSONArray
+     * @param args
+     * @return
+     */
+    public static EasyJSONArray generate(Object... args) {
+        EasyJSONArray easyJSONArray = new EasyJSONArray();
+        for (Object arg : args) {
+            easyJSONArray.put(arg);
+        }
+
+        return easyJSONArray;
+    }
+
+    /**
+     * 构建一个空的EasyJSONArray
+     */
+    public EasyJSONArray() {
+        jsonArray = new JSONArray();
+        json = jsonArray;
+        jsonType = JSON_TYPE_ARRAY;
+    }
+
+    /**
+     * 从一个JSONArray构建一个EasyJSONArray
+     * @param jsonArray
+     */
+    public EasyJSONArray(JSONArray jsonArray) {
+        this.jsonArray = jsonArray;
+        json = jsonArray;
+        jsonType = JSON_TYPE_ARRAY;
+    }
+
+    /**
+     * 从JSON字符串构造一个EasyJSONArray
+     * @param jsonString
+     */
+    public EasyJSONArray(String jsonString) {
         try {
-            jsonArray = new JSONArray(json);
+            jsonArray = new JSONArray(jsonString);
+            json = jsonArray;
         } catch (EasyJSONException e) {
             e.printStackTrace();
         }
+
+        jsonType = JSON_TYPE_ARRAY;
     }
 
-    public EasyJSONArray(JSONArray jsonArray) {
-        this.jsonArray = jsonArray;
+
+    /**
+     * 在EasyJSONArray尾部插入一个值
+     * @param value
+     * @return
+     */
+    public EasyJSONArray put(Object value) {
+        if (value == null) {
+            // SLog.info("value is NULL");
+            value = JSONObject.NULL;
+        }
+
+        // 类型转换
+        if (value instanceof EasyJSONObject) {
+            value = ((EasyJSONObject) value).getJSONObject();
+        } else if (value instanceof EasyJSONArray) {
+            value = ((EasyJSONArray) value).getJSONArray();
+        }
+        jsonArray.put(value);
+        return this;
     }
 
+    /**
+     * 获取EasyJSONArray内部表示的JSONArray
+     * @return
+     */
+    public JSONArray getJSONArray() {
+        return jsonArray;
+    }
+
+
+    /**
+     * 在EasyJSONArray中获取指定索引的值
+     * @param index
+     * @return
+     */
+    public Object get(int index) throws EasyJSONException {
+        if (jsonArray == null) {
+            return null;
+        }
+
+        Object value = jsonArray.get(index);
+
+        if (value instanceof JSONObject) {
+            value = new EasyJSONObject((JSONObject) value);
+        } else if (value instanceof JSONArray) {
+            value = new EasyJSONArray((JSONArray) value);
+        }
+        // SLog.info("valueClass[%s]", value.getClass());
+
+        return value;
+    }
+
+
+    public boolean getBoolean(int index) throws EasyJSONException {
+        return (boolean) get(index);
+    }
+
+    public int getInt(int index) throws EasyJSONException {
+        return (int) get(index);
+    }
+
+    public double getDouble(int index) throws EasyJSONException {
+        return (double) get(index);
+    }
+
+
+    public String getString(int index) throws EasyJSONException {
+        return (String) get(index);
+    }
+
+    public EasyJSONArray getArray(int index) throws EasyJSONException {
+        return (EasyJSONArray) get(index);
+    }
+
+
+    public EasyJSONObject getObject(int index) throws EasyJSONException {
+        return (EasyJSONObject) get(index);
+    }
+
+
+    /**
+     * 获取当前元素个数
+     * @return
+     */
+    public int length() {
+        return jsonArray.length();
+    }
+
+
+    /**
+     * 迭代器
+     * @return
+     */
     @Override
-    public Iterator<EasyJSONObject> iterator() {
-        return new Iterator<EasyJSONObject>() {
+    public Iterator<Object> iterator() {
+        return new Iterator<Object>() {
             private int index = 0;
             @Override
             public boolean hasNext() {
@@ -33,23 +164,20 @@ public class EasyJSONArray implements Iterable<EasyJSONObject> {
             }
 
             @Override
-            public EasyJSONObject next() {
-                EasyJSONObject easyJSONObject = null;
+            public Object next() {
+                Object obj = null;
                 try {
-                    easyJSONObject = new EasyJSONObject(jsonArray.getJSONObject(index++));
+                    obj = jsonArray.get(index++);
+                    if (obj instanceof JSONObject) {
+                        return new EasyJSONObject((JSONObject) obj);
+                    } else if (obj instanceof JSONArray) {
+                        return new EasyJSONArray((JSONArray) obj);
+                    }
                 } catch (EasyJSONException e) {
                     e.printStackTrace();
                 }
-                return easyJSONObject;
+                return obj;
             }
         };
-    }
-
-    /**
-     * 返回数组中的元素个数
-     * @return
-     */
-    public int length() {
-        return jsonArray.length();
     }
 }

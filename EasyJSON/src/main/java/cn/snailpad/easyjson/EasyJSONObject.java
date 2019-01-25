@@ -1,126 +1,122 @@
 package cn.snailpad.easyjson;
 
+
+
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-import cn.snailpad.easyjson.json.JSONArray;
 import cn.snailpad.easyjson.json.JSONObject;
-import cn.snailpad.easyjson.json.JSONTokener;
 
-public class EasyJSONObject {
+public class EasyJSONObject extends EasyJSONBase {
+    /**
+     * EasyJSONObject的内部表示
+     */
     private JSONObject jsonObject;
 
-    public EasyJSONObject(Map copyFrom) {
-        jsonObject = new JSONObject(copyFrom);
-    }
-
-    public EasyJSONObject(JSONTokener readFrom) {
-        try {
-            jsonObject = new JSONObject(readFrom);
-        } catch (EasyJSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public EasyJSONObject(String json) {
-        try {
-            jsonObject = new JSONObject(json);
-        } catch (EasyJSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public EasyJSONObject(JSONObject copyFrom, String[] names) {
-        try {
-            jsonObject = new JSONObject(copyFrom, names);
-        } catch (EasyJSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public EasyJSONObject(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
-    }
-
     /**
-     *
-     {
-     "code": 200,
-     "data": [
-     {
-     "a": 100,
-     "b": 200
-     },
-     {
-     "a": 100,
-     "c": 300
-     }
-     ]
-     }
-     *
-     *
-     * 根据json路径，获取相应的值
-     * @param path json路径
-     *             例如对上面的json数据
-     *             当path = "code"时， 返回200
-     *             当path = "data"时， 返回data所表示的JSONArray
-     *             当path = "data[0]时， 返回 data数组第1个元素的对象（下标从0开始）
-     *             当path = "data[1].c时，返回300
+     * 生成一个EasyJSONObject
+     * @param args
      * @return
      */
-    public Object get(String path) throws EasyJSONException {
-        String[] names = path.split("\\."); // 用点号来分隔不同的层级
-        Object obj = null;
-        for (String name : names) {
-            if (obj == null) {
-                obj = jsonObject;
-            }
-
-            if (name.endsWith("]")) {  // 以中括号结尾，表明是个数组
-                int bracketIndex = name.indexOf("[");
-                String arrayName = name.substring(0, bracketIndex);
-                JSONArray jsonArray = ((JSONObject)obj).getJSONArray(arrayName);
-
-                String indexStr = name.substring(bracketIndex + 1, name.length() - 1);
-                int index = Integer.parseInt(indexStr);
-                obj = jsonArray.get(index);
-            }
-            else {
-                obj = ((JSONObject)obj).get(name);
-            }
+    public static EasyJSONObject generate(Object... args) {
+        if (args.length % 2 != 0) {  // 长度必须为2的倍数
+            return null;
         }
-        return obj;
+
+        EasyJSONObject easyJSONObject = new EasyJSONObject();
+
+        int counter = 0;
+        String name = null;
+        for (Object arg : args) {
+            if (counter % 2 == 0) {  // name
+                name = (String)arg;
+            } else { // value
+                try {
+                    // 添加name/value对
+                    easyJSONObject.put(name, arg);
+                } catch (EasyJSONException e) {
+                    return null;
+                }
+            }
+            ++counter;
+        }
+
+        return easyJSONObject;
     }
 
-    public JSONArray getJSONArray(String path) throws EasyJSONException {
-        return (JSONArray)get(path);
+
+    /**
+     * 构建一个空的EasyJSONObject
+     */
+    public EasyJSONObject() {
+        jsonObject = new JSONObject();
+        json = jsonObject;
+        jsonType = JSON_TYPE_OBJECT;
     }
 
-    public EasyJSONArray getEasyJsonArray(String path) throws EasyJSONException {
-        return new EasyJSONArray((JSONArray)get(path));
+
+    /**
+     * 从一个JSONObject构建一个EasyJSONObject
+     * @param jsonObject
+     */
+    public EasyJSONObject(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
+        json = jsonObject;
+        jsonType = JSON_TYPE_OBJECT;
     }
 
-    public JSONObject getJSONObject(String path) throws EasyJSONException {
-        return (JSONObject)get(path);
+
+    /**
+     * 从JSON字符串构造一个EasyJSONObject
+     * @param jsonString
+     */
+    public EasyJSONObject(String jsonString) {
+        try {
+            jsonObject = new JSONObject(jsonString);
+            json = jsonObject;
+        } catch (EasyJSONException e) {
+            e.printStackTrace();
+        }
+
+        jsonType = JSON_TYPE_OBJECT;
     }
 
-    public boolean getBoolean(String path) throws EasyJSONException {
-        return (boolean)get(path);
-    }
 
-    public int getInt(String path) throws EasyJSONException {
-        return (int)get(path);
-    }
-
-    public double getDouble(String path) throws EasyJSONException {
-        return (double)get(path);
-    }
-
-    public String getString(String path) throws EasyJSONException {
-        return get(path).toString();
+    /**
+     * 获取EasyJSONObject内部表示的JSONObject
+     * @return
+     */
+    public JSONObject getJSONObject() {
+        return jsonObject;
     }
 
     /**
-     * 判断路径或字段是否存在
+     * 在EasyJSONObject中添加一个name/value对
+     * @param name
+     * @param value
+     * @return
+     * @throws EasyJSONException
+     */
+    public EasyJSONObject put(String name, Object value) throws EasyJSONException {
+        if (value == null) {
+            // SLog.info("value is null");
+            value = JSONObject.NULL;
+        }
+
+        // 类型转换
+        if (value instanceof EasyJSONObject) {
+            value = ((EasyJSONObject) value).getJSONObject();
+        } else if (value instanceof EasyJSONArray) {
+            value = ((EasyJSONArray) value).getJSONArray();
+        }
+
+        jsonObject.put(name, value);
+        return this;
+    }
+
+    /**
+     * 判断path是否存在
      * @param path
      * @return
      */
@@ -129,10 +125,23 @@ public class EasyJSONObject {
         try {
             get(path);
         } catch (EasyJSONException e) {
-            e.printStackTrace();
             exists = false;
         }
+
         return exists;
     }
-}
 
+
+    /**
+     * 返回entrySet，可用于遍历JSONObject
+     * @return
+     */
+    public Set<Map.Entry<String,Object>> entrySet() {
+        return jsonObject.entrySet();
+    }
+
+
+    public HashMap<String, Object> getHashMap() {
+        return jsonObject.getHashMap();
+    }
+}

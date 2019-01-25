@@ -18,13 +18,15 @@ package cn.snailpad.easyjson.json;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import cn.snailpad.easyjson.EasyJSONArray;
 import cn.snailpad.easyjson.EasyJSONException;
-import cn.snailpad.easyjson.EasyJSONList;
+import cn.snailpad.easyjson.EasyJSONObject;
 
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
@@ -672,6 +674,11 @@ public class JSONObject {
         return nameValuePairs.keySet();
     }
 
+
+    public Set<Map.Entry<String, Object>> entrySet() {
+        return nameValuePairs.entrySet();
+    }
+
     /**
      * Returns an array containing the string names in this object. This method
      * returns null if this object contains no mappings.
@@ -791,8 +798,11 @@ public class JSONObject {
             return NULL;
         }
 
-        if (o instanceof EasyJSONList) {  // 将EasyJSONList转为Collection类型
-            o = ((EasyJSONList) o).getList();
+        if (o instanceof EasyJSONArray) {  // 类型转换
+            o = ((EasyJSONArray) o).getJSONArray();
+        }
+        if (o instanceof EasyJSONObject) {  // 类型转换
+            o = ((EasyJSONObject) o).getJSONObject();
         }
         if (o instanceof JSONArray || o instanceof JSONObject) {
             return o;
@@ -826,5 +836,9 @@ public class JSONObject {
         } catch (Exception ignored) {
         }
         return null;
+    }
+
+    public HashMap<String, Object> getHashMap() {
+        return nameValuePairs;
     }
 }
