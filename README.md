@@ -14,14 +14,14 @@ EasyJSON库就是为了方便上述两种操作而诞生的。
 
 ### 引用库文件
 在模块的gradle文件中引用库文件
-> compile 'cn.snailpad:EasyJSON:1.0.7'
+> compile 'cn.snailpad:EasyJSON:1.0.9'
 
 引入好库文件后，就可以使用了，下面说明一下使用方法
 
 我们主要用到里面的3个类
 * EasyJSONObject 用于解析JSON对象
 * EasyJSONArray 用于解析JSON数组
-* EasyJSONMap 用于生成JSON字符串
+* EasyJSONBase EasyJSONObject和EasyJSONArray的基类
 
 
 ### 解析JSON
@@ -55,7 +55,7 @@ EasyJSON库就是为了方便上述两种操作而诞生的。
 String jsonStr = "{\"name\":\"Java in Action\",\"price\":138.27,\"authors\":[\"Raoul-Gabriel Urma\",\"Mario Fusco\",\"Alan Mycroft\"],\"pages\":550,\"available\":true,\"publisher\":null,\"chapters\":[{\"title\":\"Introduction\",\"pages\":22},{\"title\":\"Basic Java\",\"pages\":33},{\"title\":\"Advanced Java\",\"pages\":44}]}";
 
 // 用JSON字符串构造EasyJSONObject对象
-EasyJSONObject easyJSONObject = new EasyJSONObject(jsonStr);
+EasyJSONObject easyJSONObject = EasyJSONObject.parse(jsonStr);
 
 // 使用 EasyJSONObject.getXXX(String path);方法获取数据
 

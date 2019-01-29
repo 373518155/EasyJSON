@@ -19,9 +19,9 @@ public class EasyJSONObject extends EasyJSONBase {
      * @param args
      * @return
      */
-    public static EasyJSONObject generate(Object... args) {
+    public static EasyJSONObject generate(Object... args) throws EasyJSONException {
         if (args.length % 2 != 0) {  // 长度必须为2的倍数
-            return null;
+            throw new EasyJSONException("Invalid numbers of arguments");
         }
 
         EasyJSONObject easyJSONObject = new EasyJSONObject();
@@ -30,7 +30,11 @@ public class EasyJSONObject extends EasyJSONBase {
         String name = null;
         for (Object arg : args) {
             if (counter % 2 == 0) {  // name
-                name = (String)arg;
+                if (!(arg instanceof String)) {  // JSON对的键名必须为字符串类型
+                    throw new EasyJSONException("JSON key name must be of String type");
+                }
+
+                name = (String) arg;
             } else { // value
                 try {
                     // 添加name/value对
