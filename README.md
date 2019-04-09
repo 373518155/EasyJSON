@@ -23,54 +23,9 @@ EasyJSON库就是为了方便上述两种操作而诞生的。
 * EasyJSONArray 用于解析JSON数组
 * EasyJSONBase EasyJSONObject和EasyJSONArray的基类
 
-最好的方法是，直接上示例代码
+最好的方法是，直接上[示例代码](https://github.com/373518155/EasyJSON/blob/master/demo/Lab.java).
 ```java
-import cn.snailpad.easyjson.EasyJSONArray;
-import cn.snailpad.easyjson.EasyJSONBase;
-import cn.snailpad.easyjson.EasyJSONObject;
-import cn.snailpad.easyjson.FieldName;
-
-import static cn.snailpad.easyjson.EasyJSONBase.JSON_TYPE_ARRAY;
-import static cn.snailpad.easyjson.EasyJSONBase.JSON_TYPE_OBJECT;
-
 public class Lab {
-    /////////////////////////////////////////////////////
-    //  Java Bean类
-    //  用于展示EasyJSONBase.jsonEncode()和EasyJSONBase.jsonDecode()方法的使用
-    /////////////////////////////////////////////////////
-    public static class Data {
-        // 访问属性必须指定为public
-        public int id;
-        public String name;
-
-        // 如果使用EasyJSONBase.jsonDecode()方法，必须要有默认构造函数，或不能定义任何构造函数
-        public Data() {
-        }
-
-        public Data(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-    }
-
-
-    /////////////////////////////////////////////////////
-    //  Java Bean类
-    //  用于展示重命名字段的使用
-    /////////////////////////////////////////////////////
-    public static class Data2 {
-        // 访问属性必须指定为public
-        public int id;
-        // jsonEncode时，将字段name重命名为MyName
-        @FieldName("MyName")
-        public String name;
-
-        public Data2(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-    }
-
     public static void main(String[] args) throws Exception {
 
         /////////////////////////////////////////////////////
@@ -190,8 +145,45 @@ public class Lab {
         System.out.println(EasyJSONBase.guessJSONType(jsonString2) == JSON_TYPE_OBJECT); // 输出: false
         System.out.println(EasyJSONBase.guessJSONType(jsonString2) == JSON_TYPE_ARRAY); // 输出: true
     }
+
+        /////////////////////////////////////////////////////
+        //  Java Bean类
+        //  用于展示EasyJSONBase.jsonEncode()和EasyJSONBase.jsonDecode()方法的使用
+        /////////////////////////////////////////////////////
+        public static class Data {
+            // 访问属性必须指定为public
+            public int id;
+            public String name;
+
+            // 如果使用EasyJSONBase.jsonDecode()方法，必须要有默认构造函数，或不能定义任何构造函数
+            public Data() {
+            }
+
+            public Data(int id, String name) {
+                this.id = id;
+                this.name = name;
+            }
+        }
+
+
+        /////////////////////////////////////////////////////
+        //  Java Bean类
+        //  用于展示重命名字段的使用
+        /////////////////////////////////////////////////////
+        public static class Data2 {
+            // 访问属性必须指定为public
+            public int id;
+            // jsonEncode时，将字段name重命名为MyName
+            @FieldName("MyName")
+            public String name;
+
+            public Data2(int id, String name) {
+                this.id = id;
+                this.name = name;
+            }
+        }
 }
-```java
+```
 
 
 ### 解析JSON
