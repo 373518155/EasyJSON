@@ -1,5 +1,6 @@
 # EasyJSON
 一个十分容易使用的JSON库（解析JSON、生成JSON），支持Java和Android
+EasyJSON库的[Go语言版](https://github.com/373518155/EasyJSONGo)
 
 ## 简介
 EasyJSON是一个十分容易上手的JSON库（^_^所以才叫做EasyJSON），支持Java和Android
