@@ -155,3 +155,7 @@ javadoc {
         links "http://docs.oracle.com/javase/7/docs/api"
     }
 }
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
