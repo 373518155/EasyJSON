@@ -282,7 +282,7 @@ public class EasyJSONBase {
                 String name = entry.getKey();
                 Object value = entry.getValue();
 
-                result.put(name, jsonEncodeInternal(value));
+                result.set(name, jsonEncodeInternal(value));
             }
             return result;
         } else if (object instanceof EasyJSONArray || object instanceof JSONArray) {
@@ -296,7 +296,7 @@ public class EasyJSONBase {
             }
 
             for (Object elem : easyJSONArray) {
-                result.put(jsonEncodeInternal(elem));
+                result.append(jsonEncodeInternal(elem));
             }
 
             return result;
@@ -306,7 +306,7 @@ public class EasyJSONBase {
             int length = Array.getLength(object);
             for (int i = 0; i < length; ++i) {
                 Object elem = Array.get(object, i);
-                result.put(jsonEncodeInternal(elem));
+                result.append(jsonEncodeInternal(elem));
             }
             return result;
         } else if (object instanceof Collection) {
@@ -314,7 +314,7 @@ public class EasyJSONBase {
 
             Collection collection = (Collection) object;
             for (Object elem : collection) {
-                result.put(jsonEncodeInternal(elem));
+                result.append(jsonEncodeInternal(elem));
             }
             return result;
         } else if (object instanceof Map) {
@@ -325,7 +325,7 @@ public class EasyJSONBase {
                 Object name = entry.getKey();
                 Object value = entry.getValue();
 
-                result.put(name.toString(), value);
+                result.set(name.toString(), value);
             }
             return result;
         } else if (isPrimitiveType(object)) { // 如果是基本类型，直接返回
@@ -359,7 +359,7 @@ public class EasyJSONBase {
                 }
                 Object value = field.get(object);
                 // SLog.info("field[%s], value[%s]", name, value);
-                result.put(name, jsonEncodeInternal(value));
+                result.set(name, jsonEncodeInternal(value));
             }
 
             return result;

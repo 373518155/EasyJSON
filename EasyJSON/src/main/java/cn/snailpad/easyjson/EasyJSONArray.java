@@ -20,7 +20,7 @@ public class EasyJSONArray extends EasyJSONBase implements Iterable<Object> {
     public static EasyJSONArray generate(Object... args) {
         EasyJSONArray easyJSONArray = new EasyJSONArray();
         for (Object arg : args) {
-            easyJSONArray.put(arg);
+            easyJSONArray.append(arg);
         }
 
         return easyJSONArray;
@@ -66,7 +66,7 @@ public class EasyJSONArray extends EasyJSONBase implements Iterable<Object> {
      * @param value
      * @return
      */
-    public EasyJSONArray put(Object value) {
+    public EasyJSONArray append(Object value) {
         if (value == null) {
             // SLog.info("value is NULL");
             value = JSONObject.NULL;
@@ -111,6 +111,24 @@ public class EasyJSONArray extends EasyJSONBase implements Iterable<Object> {
         // SLog.info("valueClass[%s]", value.getClass());
 
         return value;
+    }
+
+    /**
+     * 在EasyJSONArray中设置指定索引的值
+     * @param index
+     * @param value
+     * @return
+     * @throws EasyJSONException
+     */
+    public EasyJSONArray set(int index, Object value) throws EasyJSONException {
+        if (jsonArray == null || jsonArray.length() <= index) {
+            String errMsg = String.format("Array Index Out Of Bounds, length: %d, index: %d", jsonArray.length(), index);
+            throw new EasyJSONException(errMsg);
+        }
+
+        jsonArray.put(index, value);
+
+        return this;
     }
 
 

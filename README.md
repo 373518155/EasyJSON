@@ -15,7 +15,7 @@ EasyJSON库就是为了方便上述两种操作而诞生的。
 
 ### 引用库文件
 在模块的gradle文件中引用库文件
-> compile 'cn.snailpad:EasyJSON:1.0.10'
+> compile 'cn.snailpad:EasyJSON:1.0.11'
 
 引入好库文件后，就可以使用了，下面说明一下使用方法
 
@@ -37,17 +37,17 @@ public class Lab {
         // 输出: {"name":"Hello","female":false}
 
         // 添加字段age
-        object1.put("age", 18);
+        object1.set("age", 18);
         System.out.println(object1.toString());
         // 输出: {"name":"Hello","female":false,"age":18}
 
         // 修改字段age(如果字段age不存在，则添加;如果已经存在，则修改)
-        object1.put("age", 19);
+        object1.set("age", 19);
         System.out.println(object1.toString());
         // 输出: {"name":"Hello","female":false,"age":19}
 
         // 添加数组
-        object1.put("language", EasyJSONArray.generate("Chinese", "English", "French"));
+        object1.set("language", EasyJSONArray.generate("Chinese", "English", "French"));
         System.out.println(object1.toString());
         // 输出: {"name":"Hello","female":false,"age":19,"language":["Chinese","English","French"]}
 
@@ -71,17 +71,17 @@ public class Lab {
         // 共有4个元素，其中第1个为字符串，第2个为数字，第3个为布尔值，第4个为对象
 
         // 在尾部添加一个元素
-        array1.put("World");
+        array1.append("World");
         System.out.println(array1.toString());
         // 输出: ["Hello",2,true,{"age":18},"World"]
 
         // 在尾部添加一个数组
-        array1.put(EasyJSONArray.generate("new", "old"));
+        array1.append(EasyJSONArray.generate("new", "old"));
         System.out.println(array1.toString());
         // 输出: ["Hello",2,true,{"age":18},"World",["new","old"]]
 
         // 在尾部添加一个对象
-        array1.put(EasyJSONObject.generate("female", false));
+        array1.append(EasyJSONObject.generate("female", false));
         System.out.println(array1.toString());
         // 输出: ["Hello",2,true,{"age":18},"World",["new","old"],{"female":false}]
 

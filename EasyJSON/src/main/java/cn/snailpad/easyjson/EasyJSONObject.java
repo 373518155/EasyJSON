@@ -38,7 +38,7 @@ public class EasyJSONObject extends EasyJSONBase {
             } else { // value
                 try {
                     // 添加name/value对
-                    easyJSONObject.put(name, arg);
+                    easyJSONObject.set(name, arg);
                 } catch (EasyJSONException e) {
                     return null;
                 }
@@ -96,13 +96,13 @@ public class EasyJSONObject extends EasyJSONBase {
     }
 
     /**
-     * 在EasyJSONObject中添加一个name/value对
+     * 在EasyJSONObject中设置一个name/value对
      * @param name
      * @param value
      * @return
      * @throws EasyJSONException
      */
-    public EasyJSONObject put(String name, Object value) throws EasyJSONException {
+    public EasyJSONObject set(String name, Object value) throws EasyJSONException {
         if (value == null) {
             // SLog.info("value is null");
             value = JSONObject.NULL;
