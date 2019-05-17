@@ -251,12 +251,20 @@ public class EasyJSONBase {
     }
 
     public EasyJSONArray getArray(String path) throws EasyJSONException {
-        return (EasyJSONArray) get(path);
+        Object result = get(path);
+        if (result.equals(JSONObject.NULL)) { // 如果那个字段的值是null，直接返回null
+            return null;
+        }
+        return (EasyJSONArray) result;
     }
 
 
     public EasyJSONObject getObject(String path) throws EasyJSONException {
-        return (EasyJSONObject) get(path);
+        Object result = get(path);
+        if (result.equals(JSONObject.NULL)) { // 如果那个字段的值是null，直接返回null
+            return null;
+        }
+        return (EasyJSONObject) result;
     }
 
 
