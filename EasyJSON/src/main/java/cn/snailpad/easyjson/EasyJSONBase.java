@@ -238,7 +238,11 @@ public class EasyJSONBase {
     }
 
     public double getDouble(String path) throws EasyJSONException {
-        return (double) get(path);
+        Object result = get(path);
+        if (result instanceof Integer || result instanceof Long) {
+            return Double.valueOf(result.toString());
+        }
+        return (double) result;
     }
 
 
