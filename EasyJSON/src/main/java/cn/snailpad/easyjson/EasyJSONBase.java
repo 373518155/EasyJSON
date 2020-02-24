@@ -114,13 +114,13 @@ public class EasyJSONBase {
     }
 
 
-    public static EasyJSONBase parse(String jsonString) {
+    public static <T extends EasyJSONBase> T parse(String jsonString) {
         int jsonType = guessJSONType(jsonString);
         // SLog.info("jsonType[%s]", jsonType);
         if (jsonType == JSON_TYPE_OBJECT) {
-            return new EasyJSONObject(jsonString);
+            return (T) new EasyJSONObject(jsonString);
         } else if (jsonType == JSON_TYPE_ARRAY) {
-            return new EasyJSONArray(jsonString);
+            return (T) new EasyJSONArray(jsonString);
         }
 
         return null;
@@ -239,7 +239,7 @@ public class EasyJSONBase {
 
     public double getDouble(String path) throws EasyJSONException {
         Object result = get(path);
-        if (result instanceof Integer || result instanceof Long) {
+        if (result instanceof Integer || result instanceof Long || result instanceof Float) {
             return Double.valueOf(result.toString());
         }
         return (double) result;
@@ -248,7 +248,7 @@ public class EasyJSONBase {
 
     public String getString(String path) throws EasyJSONException {
         Object result = get(path);
-        if (result.equals(JSONObject.NULL)) { // 如果那个字段的值是null，直接返回null
+        if (result == null || result.equals(JSONObject.NULL)) { // 如果那个字段的值是null，直接返回null
             return null;
         }
         return (String) result;
