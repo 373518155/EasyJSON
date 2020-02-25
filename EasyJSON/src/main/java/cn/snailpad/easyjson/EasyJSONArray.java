@@ -36,6 +36,20 @@ public class EasyJSONArray extends EasyJSONBase implements Iterable<Object> {
     }
 
     /**
+     * 從iterable構建一個EasyJSONArray
+     * @param iterable
+     * @return
+     */
+    public static EasyJSONArray from(Iterable iterable) {
+        EasyJSONArray easyJSONArray = EasyJSONArray.generate();
+        for (Object object :iterable) {
+            easyJSONArray.append(object);
+        }
+
+        return easyJSONArray;
+    }
+
+    /**
      * 从一个JSONArray构建一个EasyJSONArray
      * @param jsonArray
      */

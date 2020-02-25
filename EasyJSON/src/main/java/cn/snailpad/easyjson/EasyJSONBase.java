@@ -234,7 +234,17 @@ public class EasyJSONBase {
     }
 
     public int getInt(String path) throws EasyJSONException {
-        return (int) get(path);
+        Object result = get(path);
+        // 针对twant项目中，get(path)在某些情况会返回Double类型的值，暂未深入跟踪
+        if (result instanceof Double) {
+            double d = (double) result;
+            return (int) d;
+        }
+        return (int) result;
+    }
+
+    public long getLong(String path) throws EasyJSONException {
+        return (long) get(path);
     }
 
     public double getDouble(String path) throws EasyJSONException {
