@@ -264,12 +264,44 @@ public class EasyJSONBase {
         return (String) result;
     }
 
+    /**
+     * 以安全方式获取字符串，如果获取的是null，转换为空字符串""
+     * @param path
+     * @return
+     * @throws EasyJSONException
+     */
+    public String getSafeString(String path) throws EasyJSONException {
+        String result = getString(path);
+
+        if (result == null) {
+            result = "";
+        }
+        return result;
+    }
+
+
     public EasyJSONArray getArray(String path) throws EasyJSONException {
         Object result = get(path);
         if (result.equals(JSONObject.NULL)) { // 如果那个字段的值是null，直接返回null
             return null;
         }
         return (EasyJSONArray) result;
+    }
+
+    /**
+     * 以安全方式获取数组，如果获取的是null，转换为空数组[]
+     * @param path
+     * @return
+     * @throws EasyJSONException
+     */
+    public EasyJSONArray getSafeArray(String path) throws EasyJSONException {
+        EasyJSONArray result = getArray(path);
+
+        if (result == null || result.equals(JSONObject.NULL)) {
+            result = EasyJSONArray.generate();
+        }
+
+        return result;
     }
 
 
@@ -279,6 +311,22 @@ public class EasyJSONBase {
             return null;
         }
         return (EasyJSONObject) result;
+    }
+
+    /**
+     * 以安全方式获取对象，如果获取的是null，转换为空对象{}
+     * @param path
+     * @return
+     * @throws EasyJSONException
+     */
+    public EasyJSONObject getSafeObject(String path) throws EasyJSONException {
+        EasyJSONObject result = getObject(path);
+
+        if (result == null || result.equals(JSONObject.NULL)) {
+            result = EasyJSONObject.generate();
+        }
+
+        return result;
     }
 
 
