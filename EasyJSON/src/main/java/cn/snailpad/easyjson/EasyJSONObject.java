@@ -128,7 +128,7 @@ public class EasyJSONObject extends EasyJSONBase {
         boolean exists = true;
         try {
             get(path);
-        } catch (EasyJSONException e) {
+        } catch (Exception e) {
             exists = false;
         }
 
