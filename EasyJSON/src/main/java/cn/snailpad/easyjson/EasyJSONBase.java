@@ -191,6 +191,7 @@ public class EasyJSONBase {
 
         Object value = json;  // 赋初始值，从本层开始
         for (String name : nameList) {
+            Object tmp;
             name = name.trim();
             if (name.startsWith("[")) {  // 以中括号开始，表明是个Array
                 // 去除开始和结束的中括号
@@ -200,9 +201,17 @@ public class EasyJSONBase {
 
                 int index = Integer.parseInt(indexStr);  // 得出Array的索引
 
-                value = ((JSONArray) value).get(index);
+                tmp = ((JSONArray) value).get(index);
+                if (isJsonNull(tmp)) {
+                    return null;
+                }
+                value = tmp;
             } else {  // 否则，表明是个Object
-                value = ((JSONObject)value).get(name);
+                tmp = ((JSONObject)value).get(name);
+                if (isJsonNull(tmp)) {
+                    return null;
+                }
+                value = tmp;
             }
         }
 
@@ -244,7 +253,11 @@ public class EasyJSONBase {
     }
 
     public long getLong(String path) throws EasyJSONException {
-        return (long) get(path);
+        Object object = get(path);
+        if (object == null) {
+            return 0L;
+        }
+        return Long.parseLong(object.toString());
     }
 
     public double getDouble(String path) throws EasyJSONException {
@@ -623,6 +636,19 @@ public class EasyJSONBase {
                 clazz == Integer.class || clazz == Long.class ||
                 clazz == Float.class || clazz == Double.class ||
                 clazz == Boolean.class || clazz == String.class;
+    }
+
+    /**
+     * 判斷一個JSON值是否為null
+     * @param value
+     * @return
+     */
+    public static boolean isJsonNull(Object value) {
+        if (value == null) {
+            return true;
+        }
+
+        return value.equals(JSONObject.NULL);
     }
 
 
