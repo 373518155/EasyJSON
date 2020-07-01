@@ -238,6 +238,55 @@ public class EasyJSONBase {
         return value;
     }
 
+    /**
+     * 原来不作包装，如果字段不存在，就抛异常的版本，用于EasyJSONObject.exists
+     * @param path
+     * @return
+     * @throws EasyJSONException
+     */
+    public Object getRaw(String path) throws EasyJSONException {
+        List<String> nameList = splitPath(path);
+
+        Object value = json;  // 赋初始值，从本层开始
+        for (String name : nameList) {
+            name = name.trim();
+            if (name.startsWith("[")) {  // 以中括号开始，表明是个Array
+                // 去除开始和结束的中括号
+                String indexStr = name.substring(1, name.length() - 1);
+                indexStr = indexStr.trim();
+                // SLog.info("indexStr[%s]", indexStr);
+
+                int index = Integer.parseInt(indexStr);  // 得出Array的索引
+
+                value = ((JSONArray) value).get(index);
+            } else {  // 否则，表明是个Object
+                value = ((JSONObject)value).get(name);
+            }
+        }
+
+        String valueType = "UNKNOWN";
+        if (value.equals(JSONObject.NULL)) {
+            valueType = "NULL";
+        } else if (value instanceof Boolean) {
+            valueType = "BOOLEAN";
+        } else if (value instanceof String) {
+            valueType = "STRING";
+        } else if (value instanceof Double || value instanceof Float) {
+            valueType = "DOUBLE";
+        } else if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long) {
+            valueType = "INTEGER";
+        } else if (value instanceof JSONObject) {
+            valueType = "OBJECT";
+            value = new EasyJSONObject((JSONObject) value);
+        } else if (value instanceof JSONArray) {
+            valueType = "ARRAY";
+            value = new EasyJSONArray((JSONArray) value);
+        }
+        // SLog.info("valueType[%s]", valueType);
+
+        return value;
+    }
+
     public boolean getBoolean(String path) throws EasyJSONException {
         return (boolean) get(path);
     }
