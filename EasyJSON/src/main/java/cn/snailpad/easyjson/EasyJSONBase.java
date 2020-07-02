@@ -239,7 +239,7 @@ public class EasyJSONBase {
     }
 
     /**
-     * 原来不作包装，如果字段不存在，就抛异常的版本，用于EasyJSONObject.exists
+     * 原来不作包装，如果字段不存在，就抛异常的版本，用于EasyJSONObject.exists()方法
      * @param path
      * @return
      * @throws EasyJSONException
@@ -344,7 +344,7 @@ public class EasyJSONBase {
 
     public EasyJSONArray getArray(String path) throws EasyJSONException {
         Object result = get(path);
-        if (result.equals(JSONObject.NULL)) { // 如果那个字段的值是null，直接返回null
+        if (result == null || result.equals(JSONObject.NULL)) { // 如果那个字段的值是null，直接返回null
             return null;
         }
         return (EasyJSONArray) result;
@@ -369,7 +369,7 @@ public class EasyJSONBase {
 
     public EasyJSONObject getObject(String path) throws EasyJSONException {
         Object result = get(path);
-        if (result.equals(JSONObject.NULL)) { // 如果那个字段的值是null，直接返回null
+        if (result == null || result.equals(JSONObject.NULL)) { // 如果那个字段的值是null，直接返回null
             return null;
         }
         return (EasyJSONObject) result;
