@@ -291,6 +291,18 @@ public class EasyJSONBase {
         return (boolean) get(path);
     }
 
+    public boolean optBoolean(String path, boolean fallback) {
+        try {
+            return (boolean) getRaw(path);
+        } catch (EasyJSONException e) {
+            return fallback;
+        }
+    }
+
+    public boolean optBoolean(String path) {
+        return optBoolean(path, false);
+    }
+
     public int getInt(String path) throws EasyJSONException {
         Object result = get(path);
         // 针对twant项目中，get(path)在某些情况会返回Double类型的值，暂未深入跟踪
@@ -301,12 +313,37 @@ public class EasyJSONBase {
         return (int) result;
     }
 
+    public int optInt(String path, int fallback) {
+        try {
+            return (int) getRaw(path);
+        } catch (EasyJSONException e) {
+            return fallback;
+        }
+    }
+
+    public int optInt(String path) {
+        return optInt(path, 0);
+    }
+
     public long getLong(String path) throws EasyJSONException {
         Object object = get(path);
         if (object == null) {
             return 0L;
         }
         return Long.parseLong(object.toString());
+    }
+
+    public long optLong(String path, long fallback) {
+        try {
+            return (long) getRaw(path);
+        } catch (EasyJSONException e) {
+            return fallback;
+        }
+    }
+
+
+    public long optLong(String path) {
+        return optLong(path, 0L);
     }
 
     public double getDouble(String path) throws EasyJSONException {
@@ -317,6 +354,18 @@ public class EasyJSONBase {
         return (double) result;
     }
 
+    public double optDouble(String path, double fallback) {
+        try {
+            return getDouble(path);
+        } catch (EasyJSONException e) {
+            return fallback;
+        }
+    }
+
+    public double optDouble(String path) {
+        return optDouble(path, 0d);
+    }
+
 
     public String getString(String path) throws EasyJSONException {
         Object result = get(path);
@@ -325,6 +374,19 @@ public class EasyJSONBase {
         }
         return (String) result;
     }
+
+    public String optString(String path, String fallback) {
+        try {
+            return getString(path);
+        } catch (EasyJSONException e) {
+            return fallback;
+        }
+    }
+
+    public String optString(String path) {
+        return optString(path, "");
+    }
+
 
     /**
      * 以安全方式获取字符串，如果获取的是null，转换为空字符串""
