@@ -335,7 +335,11 @@ public class EasyJSONBase {
 
     public long optLong(String path, long fallback) {
         try {
-            return (long) getRaw(path);
+            Object raw = getRaw(path);
+            if (raw instanceof Integer) {
+                return (int) raw;
+            }
+            return (long) raw;
         } catch (EasyJSONException e) {
             return fallback;
         }
