@@ -361,7 +361,7 @@ public class EasyJSONBase {
     public double optDouble(String path, double fallback) {
         try {
             return getDouble(path);
-        } catch (EasyJSONException e) {
+        } catch (Exception e) {
             return fallback;
         }
     }
