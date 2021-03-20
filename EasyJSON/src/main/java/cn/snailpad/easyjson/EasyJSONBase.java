@@ -433,6 +433,24 @@ public class EasyJSONBase {
     }
 
 
+    /**
+     * 由于getSafeArray()方法当字段不存在时，会抛异常，本方法就是为了兼容这个问题
+     * @param path
+     * @return
+     */
+    public EasyJSONArray optArray(String path) {
+        EasyJSONArray result;
+
+        try {
+            result = getSafeArray(path);
+        } catch (Exception e) {
+            result = EasyJSONArray.generate();
+        }
+
+        return result;
+    }
+
+
     public EasyJSONObject getObject(String path) throws EasyJSONException {
         Object result = get(path);
         if (result == null || result.equals(JSONObject.NULL)) { // 如果那个字段的值是null，直接返回null
@@ -451,6 +469,22 @@ public class EasyJSONBase {
         EasyJSONObject result = getObject(path);
 
         if (result == null || result.equals(JSONObject.NULL)) {
+            result = EasyJSONObject.generate();
+        }
+
+        return result;
+    }
+
+    /**
+     * 由于getSafeObject()方法当字段不存在时，会抛异常，本方法就是为了兼容这个问题
+     * @param path
+     * @return
+     */
+    public EasyJSONObject optObject(String path) {
+        EasyJSONObject result;
+        try {
+            result = getSafeObject(path);
+        } catch (Exception e) {
             result = EasyJSONObject.generate();
         }
 
