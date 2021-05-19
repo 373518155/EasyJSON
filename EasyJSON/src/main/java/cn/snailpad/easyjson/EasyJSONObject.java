@@ -2,10 +2,12 @@ package cn.snailpad.easyjson;
 
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import cn.snailpad.easyjson.json.JSONArray;
 import cn.snailpad.easyjson.json.JSONObject;
 
 public class EasyJSONObject extends EasyJSONBase {
@@ -113,6 +115,12 @@ public class EasyJSONObject extends EasyJSONBase {
             value = ((EasyJSONObject) value).getJSONObject();
         } else if (value instanceof EasyJSONArray) {
             value = ((EasyJSONArray) value).getJSONArray();
+        } else if (value instanceof Map) {
+            Map<String, ?> map = (Map<String, ?>) value;
+            value = new JSONObject(map);
+        } else if (value instanceof Collection) {
+            Collection<?> collection = (Collection<?>) value;
+            value = new JSONArray(collection);
         }
 
         jsonObject.put(name, value);
