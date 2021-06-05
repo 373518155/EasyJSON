@@ -90,6 +90,28 @@ public class EasyJSONObject extends EasyJSONBase {
 
 
     /**
+     * 从map构建一个EasyJSONObject
+     */
+    public EasyJSONObject(Map<String, ?> map) {
+        // 先构建一个空的EasyJSONObject
+        this();
+
+        if (map == null) {
+            return;
+        }
+        // 不能直接用 public JSONObject(Map copyFrom); 方法，因为还涉及到类型转换，
+        // 需要用set();方法
+        for (Map.Entry<String, ?> entry : map.entrySet()) {
+            try {
+                set(entry.getKey(), entry.getValue());
+            } catch (EasyJSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
      * 获取EasyJSONObject内部表示的JSONObject
      * @return
      */
