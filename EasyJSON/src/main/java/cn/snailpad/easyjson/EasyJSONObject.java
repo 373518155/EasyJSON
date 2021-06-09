@@ -127,25 +127,7 @@ public class EasyJSONObject extends EasyJSONBase {
      * @throws EasyJSONException
      */
     public EasyJSONObject set(String name, Object value) throws EasyJSONException {
-        if (value == null) {
-            // SLog.info("value is null");
-            value = JSONObject.NULL;
-        }
-
-        // 类型转换
-        if (value instanceof EasyJSONObject) {
-            value = ((EasyJSONObject) value).getJSONObject();
-        } else if (value instanceof EasyJSONArray) {
-            value = ((EasyJSONArray) value).getJSONArray();
-        } else if (value instanceof Map) {
-            Map<String, ?> map = (Map<String, ?>) value;
-            value = new JSONObject(map);
-        } else if (value instanceof Collection) {
-            Collection<?> collection = (Collection<?>) value;
-            value = new JSONArray(collection);
-        }
-
-        jsonObject.put(name, value);
+        jsonObject.put(name, JSONObject.wrap(value));
         return this;
     }
 

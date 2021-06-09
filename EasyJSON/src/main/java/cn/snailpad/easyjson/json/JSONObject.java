@@ -16,6 +16,7 @@
 
 package cn.snailpad.easyjson.json;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -833,6 +834,17 @@ public class JSONObject {
             if (o.getClass().getPackage().getName().startsWith("java.")) {
                 return o.toString();
             }
+
+
+            // 其它，尝试将java对象转换为JSONObject
+            JSONObject result = new JSONObject();
+            Field[] allFields = o.getClass().getDeclaredFields();
+            for (Field field : allFields) {
+                field.setAccessible(true);
+                Object value = field.get(o);
+                result.put(field.getName(), value);
+            }
+            return result;
         } catch (Exception ignored) {
         }
         return null;

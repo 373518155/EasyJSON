@@ -81,18 +81,7 @@ public class EasyJSONArray extends EasyJSONBase implements Iterable<Object> {
      * @return
      */
     public EasyJSONArray append(Object value) {
-        if (value == null) {
-            // SLog.info("value is NULL");
-            value = JSONObject.NULL;
-        }
-
-        // 类型转换
-        if (value instanceof EasyJSONObject) {
-            value = ((EasyJSONObject) value).getJSONObject();
-        } else if (value instanceof EasyJSONArray) {
-            value = ((EasyJSONArray) value).getJSONArray();
-        }
-        jsonArray.put(value);
+        jsonArray.put(JSONObject.wrap(value));
         return this;
     }
 
