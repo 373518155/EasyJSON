@@ -99,13 +99,13 @@ public class EasyJSONBase {
             return JSON_TYPE_INVALID;
         }
 
+        jsonString = jsonString.trim();
         int len = jsonString.length();
-        for (int i = 0; i < len; ++i) {
-            char ch = jsonString.charAt(i);
+        if (len > 0) {
+            char ch = jsonString.charAt(0);
             if (ch == '{') {
                 return JSON_TYPE_OBJECT;
-            }
-            if (ch == '[') {
+            } else if (ch == '[') {
                 return JSON_TYPE_ARRAY;
             }
         }
@@ -118,9 +118,19 @@ public class EasyJSONBase {
         int jsonType = guessJSONType(jsonString);
         // SLog.info("jsonType[%s]", jsonType);
         if (jsonType == JSON_TYPE_OBJECT) {
-            return (T) new EasyJSONObject(jsonString);
+            EasyJSONObject easyJSONObject = new EasyJSONObject(jsonString);
+            JSONObject jsonObject = easyJSONObject.getJSONObject();
+            if (jsonObject == null) {
+                return null;
+            }
+            return (T) easyJSONObject;
         } else if (jsonType == JSON_TYPE_ARRAY) {
-            return (T) new EasyJSONArray(jsonString);
+            EasyJSONArray easyJSONArray = new EasyJSONArray(jsonString);
+            JSONArray jsonArray = easyJSONArray.getJSONArray();
+            if (jsonArray == null) {
+                return null;
+            }
+            return (T) easyJSONArray;
         }
 
         return null;
